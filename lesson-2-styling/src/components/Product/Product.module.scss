@@ -1,0 +1,24 @@
+@value font-stack from '../../shared/scss/variables.scss';
+
+@import "src/shared/scss/var";
+
+.article {
+  width: 400px;
+  max-width: 400px;
+  padding: 20px;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, .5);
+  transition: .7s;
+
+  &__title {
+    font: font-stack;
+    font-size: 1.5rem;
+  }
+
+  &:hover {
+    opacity: .5;
+  }
+}
+
+.image {
+  composes: img from '../../shared/scss/shared.module.scss';
+}

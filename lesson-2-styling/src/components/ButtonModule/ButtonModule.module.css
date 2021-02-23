@@ -1,0 +1,18 @@
+.btn {
+    display: inline-block;
+    padding: 5px 15px;
+    cursor: pointer;
+    border: none;
+}
+
+.primary {
+    composes: btn;
+    background-color: #000;
+    color: #ffffff;
+}
+
+.disabled {
+    composes: btn;
+    background-color: #777777;
+    color: #fff;
+}
