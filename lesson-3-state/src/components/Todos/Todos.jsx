@@ -1,6 +1,8 @@
 import React, { Component } from "react";
-// import AddToForm from "../AddToDoForm";
-import { Button } from "../../shared/components";
+import AddToForm from "../AddToDoForm";
+import TodosList from "../TodosList";
+import Filters from "../Filters";
+import Search from "../Search";
 
 const statusEnum = {
   ALL: "ALL",
@@ -20,13 +22,7 @@ class Todos extends Component {
       },
     ],
     filter: "",
-    trim: "",
     status: statusEnum.ALL,
-  };
-
-  handleChange = (event) => {
-    const name = event.target.name;
-    this.setState({ [name]: event.target.value });
   };
 
   generateId() {
@@ -43,14 +39,7 @@ class Todos extends Component {
 
     this.setState((prevState) => ({
       items: [...prevState.items, todo],
-      trim: "",
     }));
-  };
-
-  handleSubmit = (event) => {
-    event.preventDefault();
-    const { trim } = this.state;
-    this.createTodo(trim);
   };
 
   handleRemove = (event) => {
@@ -92,8 +81,12 @@ class Todos extends Component {
     this.setState({ status });
   };
 
+  handleFilterChange = (filter) => {
+    this.setState({ filter });
+  };
+
   render() {
-    const { items, trim, filter, status } = this.state;
+    const { items, filter, status } = this.state;
     const visibleItems = this.showFilters(
       this.getFilteredTodos(items, filter),
       status
@@ -101,49 +94,21 @@ class Todos extends Component {
 
     return (
       <div className="container mt-5">
-        <form onSubmit={this.handleSubmit}>
-          <input
-            name="trim"
-            type="text"
-            className="form-control"
-            onChange={this.handleChange}
-            value={trim}
-          />
-          <Button type="submit" className="btn btn-primary">
-            Добавить
-          </Button>
-        </form>
-
-        {/*<AddToForm />*/}
-        <div className="mt-3">
-          <h3>Filter:</h3>
-          <input
-            type="text"
-            name="filter"
-            className="form-control"
-            onChange={this.handleChange}
-            value={filter}
-          />
-        </div>
-        <button onClick={() => this.handleStatusChange(statusEnum.ALL)}>
-          {statusEnum.ALL}
-        </button>
-        <button onClick={() => this.handleStatusChange(statusEnum.DONE)}>
-          {statusEnum.DONE}
-        </button>
-        <button onClick={() => this.handleStatusChange(statusEnum.NO_DONE)}>
-          {statusEnum.NO_DONE}
-        </button>
-        <ul className="list-group mt-3">
-          {visibleItems.map(({ id, label }) => (
-            <li className="list-group-item" key={id}>
-              <span>{label}</span>
-              <button data-id={id} onClick={this.handleRemove}>
-                Удалить
-              </button>
-            </li>
-          ))}
-        </ul>
+        <AddToForm createTodo={this.createTodo} />
+        <Search handleFilterChange={this.handleFilterChange} />
+        <Filters handleStatusChange={this.handleStatusChange} />
+        <TodosList
+          visibleItems={visibleItems}
+          handleRemove={this.handleRemove}
+        />
+        {/*{!!visibleItems.length ? (*/}
+        {/*  <TodosList*/}
+        {/*    visibleItems={visibleItems}*/}
+        {/*    handleRemove={this.handleRemove}*/}
+        {/*  />*/}
+        {/*) : (*/}
+        {/*  <p>Not found Todos!</p>*/}
+        {/*)}*/}
       </div>
     );
   }
