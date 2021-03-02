@@ -17,10 +17,10 @@ class Modal extends Component {
     open: false,
   };
 
-  // constructor(props) {
-  //   super(props);
-  //   // this.el = document.createElement("div");
-  // }
+  constructor(props) {
+    super(props);
+    // this.el = document.createElement("div");
+  }
 
   componentDidMount() {
     // modalRoot.appendChild(this.el);

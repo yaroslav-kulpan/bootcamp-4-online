@@ -26,6 +26,7 @@ class Todos extends Component {
         //   completed: false,
         // },
       ],
+      ids: [],
       filter: "",
       status: statusEnum.ALL,
       modal: false,
