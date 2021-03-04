@@ -3,9 +3,7 @@ import Product from "../Product";
 
 const ProductsGrid = ({ products }) => {
   const items = products.map((props) => (
-    <div className="col-4" key={props._id}>
-      <Product {...props} />
-    </div>
+      <Product key={props._id} {...props} />
   ));
 
   return (

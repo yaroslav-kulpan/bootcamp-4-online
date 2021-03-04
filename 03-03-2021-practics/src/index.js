@@ -1,11 +1,11 @@
 import { StrictMode } from "react";
 import ReactDOM from "react-dom";
-// import App from './components/App';
-import SearchPage from "./pages/SearchPage/SearchPage";
+import App from './components/App';
+// import SearchPage from "./pages/SearchPage/SearchPage";
 
 ReactDOM.render(
   <StrictMode>
-    <SearchPage />
+    <App />
   </StrictMode>,
   document.getElementById("root")
 );

@@ -4,9 +4,9 @@ import queryString from "query-string";
 import ProductsService from "../../services/products.service";
 import Search from "../../components/Search/Search";
 
-const productsService = new ProductsService();
-
 class SearchPage extends Component {
+  productsService = new ProductsService();
+
   state = {
     querySubmitStr: "",
     products: [],
@@ -42,9 +42,8 @@ class SearchPage extends Component {
       page: this.state.page,
       limits: 6,
     });
-    // query ?? // ?search=${this.state.query}&page=${this.state.page}&limits=${this.state.limits}
-
-    productsService.searchProducts(query)
+    this.productsService
+      .searchProducts(query)
       .then(({ data }) => {
         this.setState((prevState) => ({
           products: [...prevState.products, ...data.result],

@@ -1,4 +1,5 @@
-import React from "react";
+import React, { memo } from "react";
+import classnames from "classnames";
 
 const Pagination = ({
   pages = [],
@@ -9,8 +10,11 @@ const Pagination = ({
   goToPage,
 }) => {
   return (
-    <div className="container mt-3">
-      <nav aria-label="Page navigation example">
+    <div className="container mt-5 mb-4">
+      <nav
+        className="d-flex justify-content-center"
+        aria-label="Products page navigation"
+      >
         <ul className="pagination">
           <li className="page-item">
             <button
@@ -22,7 +26,12 @@ const Pagination = ({
             </button>
           </li>
           {pages.map((page) => (
-            <li className="page-item" key={page}>
+            <li
+              key={page}
+              className={classnames("page-item", {
+                active: currentPage === page,
+              })}
+            >
               <button className="page-link" data-page={page} onClick={goToPage}>
                 {page}
               </button>
@@ -43,4 +52,4 @@ const Pagination = ({
   );
 };
 
-export default Pagination;
+export default memo(Pagination);

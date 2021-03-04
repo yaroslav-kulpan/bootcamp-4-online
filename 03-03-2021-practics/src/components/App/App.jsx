@@ -1,14 +1,20 @@
-import React, { Component } from "react";
-import axios from "axios";
+import React, { PureComponent } from "react";
 import queryString from "query-string";
 
 import ProductsGrid from "../ProductsGrid";
 import Loader from "../../shared/components/Loader";
-
 import Pagination from "../Pagination";
-import "../../shared/css/globalize.css";
 
-class App extends Component {
+import ProductsService from "../../services/products.service";
+
+import "../../shared/css/globalize.css";
+import SelectSort from "../SelectSort";
+import ProductsToolbar from "../ProductsToolbar";
+import PriceFilter from "../PriceFilter";
+
+class App extends PureComponent {
+  productsService = new ProductsService();
+
   state = {
     products: [],
     loading: false,
@@ -17,6 +23,7 @@ class App extends Component {
       pages: [],
     },
     page: 1,
+    sort: "",
   };
 
   stringifyQuery = (query) => {
@@ -37,8 +44,8 @@ class App extends Component {
   fetchProducts() {
     this.setState({ loading: true });
     const query = this.stringifyQuery({ page: this.state.page });
-    axios
-      .get(`https://amz-app.herokuapp.com/api/v1/products${query}`)
+    this.productsService
+      .fetchProducts(query)
       .then(({ data }) =>
         this.setState({ products: data.result, pager: data.pager })
       )
@@ -46,19 +53,9 @@ class App extends Component {
       .finally(() => this.setState({ loading: false }));
   }
 
-  // async componentDidMount() {
-  //   this.setState({ loading: true });
-  //   try {
-  //     const {
-  //       data: { result: products },
-  //     } = await axios.get(`https://amz-app.herokuapp.com/api/v1/products`);
-  //     this.setState({ products });
-  //   } catch (errors) {
-  //     this.setState({ errors: errors.response.data });
-  //   } finally {
-  //     this.setState({ loading: false });
-  //   }
-  // }
+  handleSortChange = ({ target: { value: sort } }) => {
+    this.setState({ sort });
+  };
 
   goToPage = (event) => {
     const page = Number(event.target.dataset.page);
@@ -74,25 +71,41 @@ class App extends Component {
   };
 
   render() {
-    const { products, pager, loading, errors } = this.state;
+    const { products, pager, loading, errors, sort } = this.state;
     return (
-      <div>
-        {loading && <Loader />}
-        {errors && (
-          <div className="alert alert-danger" role="alert">
-            {errors.message}
+      <>
+        <ProductsToolbar>
+          <SelectSort sort={sort} handleSortChange={this.handleSortChange} />
+        </ProductsToolbar>
+        <div className="container">
+          <div className="row">
+            <div className="col-3 d-none d-lg-block mt-3">
+              <div className="card">
+                <div className="card-body">
+                  <PriceFilter />
+                </div>
+              </div>
+            </div>
+            <div className="col-xs-12 col-lg-9">
+              {loading && <Loader />}
+              {errors && (
+                <div className="alert alert-danger" role="alert">
+                  {errors.message}
+                </div>
+              )}
+              <ProductsGrid products={products} />
+            </div>
           </div>
-        )}
-        <ProductsGrid products={products} />
+        </div>
         <Pagination
-          pages={pager.pages}
-          currentPage={pager.currentPage}
-          endPage={pager.endPage}
-          prevPage={this.prevPage}
-          goToPage={this.goToPage}
-          nextPage={this.nextPage}
+            pages={pager.pages}
+            currentPage={pager.currentPage}
+            endPage={pager.endPage}
+            prevPage={this.prevPage}
+            goToPage={this.goToPage}
+            nextPage={this.nextPage}
         />
-      </div>
+      </>
     );
   }
 }
