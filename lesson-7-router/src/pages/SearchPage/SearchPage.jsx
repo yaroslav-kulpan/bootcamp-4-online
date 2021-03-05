@@ -8,7 +8,7 @@ class SearchPage extends Component {
   productsService = new ProductsService();
 
   state = {
-    querySubmitStr: "",
+    // querySubmitStr: "",
     products: [],
     pager: {},
     loading: false,
@@ -16,17 +16,37 @@ class SearchPage extends Component {
     page: 1,
   };
 
+  componentDidMount() {
+    const newQuery = queryString.parse(this.props.location.search).search;
+    if (newQuery) {
+      this.searchProducts();
+    }
+  }
+
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (prevState.querySubmitStr !== this.state.querySubmitStr) {
+    const oldQuery = queryString.parse(prevProps.location.search).search;
+    const newQuery = queryString.parse(this.props.location.search).search;
+    // console.log(oldQuery, newQuery)
+
+    // if(значение state поменялось и не равно новому) {
+    // выполни function
+    // }
+    //
+
+    // if(значение props поменялось и не равно новым) {
+    // выполни function
+    // }
+
+    if (oldQuery !== newQuery) {
       this.searchProducts();
     }
 
-    if (prevState.page !== this.state.page) {
-      window.scrollTo({
-        top: document.documentElement.scrollHeight,
-        behavior: "smooth",
-      });
-    }
+    // if (prevState.page !== this.state.page) {
+    //   window.scrollTo({
+    //     top: document.documentElement.scrollHeight,
+    //     behavior: "smooth",
+    //   });
+    // }
   }
 
   stringifyQuery = (query) => {
@@ -36,12 +56,12 @@ class SearchPage extends Component {
 
   searchProducts = () => {
     this.setState({ loading: true });
-
-    const query = this.stringifyQuery({
-      search: this.state.querySubmitStr,
-      page: this.state.page,
-      limits: 6,
-    });
+    // const query = this.stringifyQuery({
+    //   search: this.props.,
+    //   page: this.state.page,
+    //   limits: 6,
+    // });
+    const query = this.props.location.search;
     this.productsService
       .searchProducts(query)
       .then(({ data }) => {
@@ -56,7 +76,12 @@ class SearchPage extends Component {
   };
 
   onSubmit = (query) => {
-    this.setState({ querySubmitStr: query, page: 1, products: [] });
+    const currentQuery = this.stringifyQuery({ search: query, page: 1 });
+    this.props.history.push({
+      pathname: "/search",
+      search: currentQuery,
+    });
+    this.setState({ products: [] });
   };
 
   render() {

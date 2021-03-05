@@ -32,6 +32,7 @@ class App extends PureComponent {
     };
 
     componentDidMount() {
+        console.log(this.props, '[THIS.PROPS]')
         this.fetchProducts();
     }
 
