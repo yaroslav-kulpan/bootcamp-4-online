@@ -88,15 +88,12 @@ class SearchPage extends Component {
     const { products, page, pager } = this.state;
     return (
       <>
-        <nav className="navbar navbar-light bg-light">
-          <div className="container-fluid">
-            <a href="/" className="navbar-brand">
-
-            </a>
-            <Search onSubmit={this.onSubmit} />
-          </div>
+        <nav className="navbar navbar-light bg-light w-100 d-flex justify-content-center">
+          <Search onSubmit={this.onSubmit} />
         </nav>
-        <ProductsGrid products={products} />
+        <div className="container py-3">
+          <ProductsGrid products={products} />
+        </div>
         {page !== 1 && pager?.endPage !== pager?.currentPage && (
           <div className="container text-center">
             <button

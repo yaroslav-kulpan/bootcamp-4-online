@@ -24,5 +24,5 @@ body {
 
 .product-cover-image {
     height: 400px;
-    object-fit: contain;
+    object-fit: fill;
 }
