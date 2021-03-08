@@ -6,7 +6,23 @@ body {
     flex-grow: 1;
 }
 
+#root {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.footer {
+    margin-top: auto;
+}
+
 .card-image {
     height: 200px;
     object-fit: cover;
+}
+
+.product-cover-image {
+    height: 400px;
+    object-fit: contain;
 }

@@ -91,7 +91,7 @@ class SearchPage extends Component {
         <nav className="navbar navbar-light bg-light">
           <div className="container-fluid">
             <a href="/" className="navbar-brand">
-              Магазин
+
             </a>
             <Search onSubmit={this.onSubmit} />
           </div>

@@ -21,10 +21,10 @@ const navbarLinks = [
 
 const Navbar = () => {
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light">
-      <div className="container-fluid">
-        <Link className="navbar-brand" to="/">
-          Логотип
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div className="container">
+        <Link to="/" className="navbar-brand">
+          The Delivery
         </Link>
         <ul className="navbar-nav">
           {navbarLinks.map(({ exact, to, label }) => (

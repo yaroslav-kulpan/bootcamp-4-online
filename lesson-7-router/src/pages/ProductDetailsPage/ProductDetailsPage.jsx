@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import ProductsService from "../../services/products.service";
+import { toCurrency } from "../../lib";
 
 class ProductDetailsPage extends Component {
   httpService = new ProductsService();
@@ -31,12 +32,24 @@ class ProductDetailsPage extends Component {
     return (
       <div>
         {product && (
-          <>
-            <img src={product.thumbnail} alt="product name" />
-            <h3>Product name: {product.name.ukr}</h3>
-            <b>price: {product.price}</b>
-            <p>Description: {product.description.ukr}</p>
-          </>
+          <div className="container mt-5">
+            <div className="row">
+              <div className="col-12 offset-lg-1 col-lg-4">
+                <img
+                  src={product.thumbnail}
+                  className="img-fluid w-100 product-cover-image border-1 rounded"
+                  alt={product.name.ukr}
+                />
+              </div>
+              <div className="col-12 offset-lg-1 col-lg-4">
+                <h1>{product.name.ukr}</h1>
+                <b className="d-inline-block my-2">
+                  {toCurrency({ price: product.price })}
+                </b>
+                <p>{product.description.ukr}</p>
+              </div>
+            </div>
+          </div>
         )}
       </div>
     );
