@@ -4,6 +4,12 @@ import queryString from "query-string";
 import ProductsService from "../../services/products.service";
 import Search from "../../components/Search/Search";
 
+// [X] 1. Когда мы вводим одно и тоже слово в поиске, наш поиск очищается и не работает | Критичность: 10 помидоров;
+// [-] 2. Пользователь может выполнить поиск с пустой строкой | Критичность: 4 помидора;
+// [] 3. Сорри, разобраться с начальной отрисовкой;
+// [] 4. Нужно добавить функционал handleGoBack для возврата пользователя назад.
+//
+
 class SearchPage extends Component {
   productsService = new ProductsService();
 
@@ -17,6 +23,8 @@ class SearchPage extends Component {
   };
 
   componentDidMount() {
+    console.dir(this.props.location);
+    console.dir(this.props.history);
     const newQuery = queryString.parse(this.props.location.search).search;
     if (newQuery) {
       this.searchProducts();
@@ -26,6 +34,7 @@ class SearchPage extends Component {
   componentDidUpdate(prevProps, prevState, snapshot) {
     const oldQuery = queryString.parse(prevProps.location.search).search;
     const newQuery = queryString.parse(this.props.location.search).search;
+    // ?page=1&search=1 ----> { search: '1', page: 1 }
     // console.log(oldQuery, newQuery)
 
     // if(значение state поменялось и не равно новому) {
@@ -56,14 +65,16 @@ class SearchPage extends Component {
 
   searchProducts = () => {
     this.setState({ loading: true });
-    // const query = this.stringifyQuery({
-    //   search: this.props.,
-    //   page: this.state.page,
-    //   limits: 6,
-    // });
-    const query = this.props.location.search;
+    const search = queryString.parse(this.props.location.search).search;
+    // ?page=1&search=вар -----> { search: "вар" }
+    const query = this.stringifyQuery({
+      search,
+      page: this.state.page,
+      limits: 6,
+    });
+    // const query = this.props.location.search;
     this.productsService
-      .searchProducts(query)
+      .searchProducts(`?${query}`)
       .then(({ data }) => {
         this.setState((prevState) => ({
           products: [...prevState.products, ...data.result],
@@ -74,14 +85,20 @@ class SearchPage extends Component {
       .catch((errors) => this.setState({ errors: errors.response.data }))
       .finally(() => this.setState({ loading: false }));
   };
-
+  // оароа оараоа оаралоалаор ---->
   onSubmit = (query) => {
-    const currentQuery = this.stringifyQuery({ search: query, page: 1 });
+    const oldQuery = queryString.parse(this.props.location.search).search;
+    // ?page=1&search=вар -----> { search: "вар" }
+    if (query === oldQuery) {
+      return;
+    }
+    const search = this.stringifyQuery({ search: query });
+    // { search: query, page: 1 } ---> ?page=1&search=вареник
     this.props.history.push({
-      pathname: "/search",
-      search: currentQuery,
+      pathname: this.props.location.pathname,
+      search,
     });
-    this.setState({ products: [] });
+    this.setState({ products: [], page: 1 });
   };
 
   render() {

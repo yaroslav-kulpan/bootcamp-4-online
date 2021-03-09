@@ -1,11 +1,15 @@
 import React from "react";
-import { toCurrency } from "../../lib";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 
-const Product = ({ name, price, thumbnail, _id }) => {
+import { toCurrency } from "../../lib";
+
+const Product = ({ name, price, thumbnail, _id, location }) => {
   return (
     <div className="col-12 col-lg-4">
-      <Link to={`/products/${_id}`} className="text-decoration-none">
+      <Link
+        to={{ pathname: `/products/${_id}`, state: { from: location } }}
+        className="text-decoration-none"
+      >
         <div className="card mt-3">
           <img
             src={thumbnail}
@@ -24,4 +28,15 @@ const Product = ({ name, price, thumbnail, _id }) => {
   );
 };
 
-export default Product;
+/// provider ---// location, history, match
+// <Route component render={(props) => }/>
+// <Consumer>
+// {(props)  => (
+// <AnyComponent {...props}/>
+// )}
+// </Consumer>
+//
+//
+//
+export default withRouter(Product);
+/// ----> returned new Component ??? Что в нем location, history, match

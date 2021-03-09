@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import ProductsService from "../../services/products.service";
 import { toCurrency } from "../../lib";
 import Breadcrumbs from "../../shared/components/Breadcrumbs";
+import { Link, Route } from "react-router-dom";
+import CategoriesPage from "../CategoriesPage";
 
 class ProductDetailsPage extends Component {
   httpService = new ProductsService();
@@ -28,12 +30,26 @@ class ProductDetailsPage extends Component {
     }
   }
 
+  handleGoBack = () => {
+    const { location, history } = this.props;
+    // if (location.state && location.state.from) {
+    //   this.props.history.push(location.state.from);
+    // } else {
+    //   this.props.history.push('/products');
+    // }
+    // history.push(location.state?.from || '/products');
+    history.push(location.state?.from ?? "/products");
+  };
+
   render() {
     const { product } = this.state;
+    const { match, location } = this.props;
     return (
       <div>
         <Breadcrumbs>
-          <button className="btn btn-primary">Назад</button>
+          <button className="btn btn-primary" onClick={this.handleGoBack}>
+            Назад
+          </button>
         </Breadcrumbs>
         {product && (
           <div className="container">
@@ -55,6 +71,18 @@ class ProductDetailsPage extends Component {
             </div>
           </div>
         )}
+        <div className="container">
+          <Link
+            to={{
+              pathname: `${match.url}/categories`,
+              state: { from: location.state?.from },
+            }}
+          >
+            categories
+          </Link>
+
+          <Route path={`${match.path}/categories`} component={CategoriesPage} />
+        </div>
       </div>
     );
   }
