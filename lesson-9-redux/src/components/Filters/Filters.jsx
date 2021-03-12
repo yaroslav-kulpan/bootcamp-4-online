@@ -1,10 +1,5 @@
 import React from "react";
-
-const statusEnum = {
-  ALL: "ALL",
-  DONE: "DONE",
-  NO_DONE: "NO_DONE",
-};
+import statusEnum from "../../enums/status.enum";
 
 const buttons = [
   {

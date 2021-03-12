@@ -1,26 +1,22 @@
 import React, {Component} from "react";
 import {connect} from 'react-redux';
-import {addToDo, handleFilterChange, removeToDo} from '../../redux/todos/todos.actions';
+import {addToDo, handleFilterChange, removeToDo, handleStatusChange} from '../../redux/todos/todos.actions';
+import {getFilteredTodos, showFilters} from "../../redux/todos/todos.selectors";
 
 import AddToForm from "../AddToDoForm";
 import TodosList from "../TodosList";
 import Filters from "../Filters";
 import Search from "../Search";
 import Modal from "../../shared/components/Modal";
+
 import PlusIcon from "../../shared/icons/PlusIcon";
 
-const statusEnum = {
-    ALL: "ALL",
-    DONE: "DONE",
-    NO_DONE: "NO_DONE",
-};
-
-// Todo: 1. Нам нужно создать store + подключить redux.
-// Todo: 2. Нам нужно создать root-reducer и reducers.
-// Todo: 3. Reducer будет следующего вида items: Array<{  id: string, label: string, createdAt: number, completed: boolean }>
-// Todo: 4. избавиться от didUpdate и didMount
-// Todo: 5. подключить redux devtools
-// ToDO: 6. Перенести методы
+// Todo: 1. [X] Нам нужно создать store + подключить redux.
+// Todo: 2. [-] Нам нужно создать root-reducer и reducers.
+// Todo: 3. [X] Reducer будет следующего вида items: Array<{  id: string, label: string, createdAt: number, completed: boolean }>
+// Todo: 4. [X] избавиться от didUpdate и didMount
+// Todo: 5. [X] подключить redux devtools
+// ToDO: 6. [-] Перенести методы
 
 class Todos extends Component {
     id = 1;
@@ -36,8 +32,8 @@ class Todos extends Component {
                 //   completed: false,
                 // },
             ],
-            filter: "",
-            status: statusEnum.ALL,
+            // filter: "",
+            // status: statusEnum.ALL,
             modal: false,
         };
         console.log("[THIS.PROPS]", this.props);
@@ -76,9 +72,9 @@ class Todos extends Component {
     //     // );
     // }
 
-    generateId() {
-        return this.id++;
-    }
+    // generateId() {
+    //     return this.id++;
+    // }
 
     createTodo = (label) => {
         // const todo = {
@@ -109,28 +105,10 @@ class Todos extends Component {
         // });
     };
 
-    getFilteredTodos(items, filterStr) {
-        return items.filter((todo) =>
-            todo.label.toLowerCase().includes(filterStr.toLowerCase())
-        );
-    }
 
-    showFilters = (items, statusStr) => {
-        switch (statusStr) {
-            case statusEnum.ALL:
-                return items;
-            case statusEnum.DONE:
-                return items.filter((item) => item.completed);
-            case statusEnum.NO_DONE:
-                return items.filter((item) => !item.completed);
-            default:
-                return items;
-        }
-    };
-
-    handleStatusChange = (status) => {
-        this.setState({status});
-    };
+    // handleStatusChange = (status) => {
+    //     this.setState({status});
+    // };
 
     // handleFilterChange = (filter) => {
     //     this.setState({filter});
@@ -143,11 +121,11 @@ class Todos extends Component {
     render() {
         console.log("[RENDER]");
         const {modal} = this.state;
-        const {items, filter, status, handleFilterChange} = this.props;
-        const visibleItems = this.showFilters(
-            this.getFilteredTodos(items, filter),
-            status
-        );
+        const {items, status, handleFilterChange, handleStatusChange, isItemsIncludes, filteredNotFound} = this.props;
+        // const visibleItems = this.showFilters(
+        //     this.getFilteredTodos(items, filter),
+        //     status
+        // );
 
         return (
             <div className="container mt-5">
@@ -158,17 +136,23 @@ class Todos extends Component {
                 )}
                 <div className="row my-4">
                     <div className="col-6">
-                        <Search handleFilterChange={handleFilterChange}/>
+                        {
+                            isItemsIncludes && (
+                                <Search handleFilterChange={handleFilterChange}/>
+                            )
+                        }
                     </div>
                     <div className="col-6 d-flex justify-content-end">
                         <Filters
-                            handleStatusChange={this.handleStatusChange}
+                            handleStatusChange={handleStatusChange}
                             status={status}
                         />
                     </div>
                 </div>
                 <TodosList
-                    visibleItems={visibleItems}
+                    filteredNotFound={filteredNotFound}
+                    isItemsIncludes={isItemsIncludes}
+                    visibleItems={items}
                     handleRemove={this.handleRemove}
                 />
                 <button
@@ -198,11 +182,21 @@ class Todos extends Component {
 //     return {items, filter, status};
 // }
 
-const mapStateToProps = ({items, filter, status}) => ({
-    items,
-    filter,
-    status,
-})
+const mapStateToProps = ({todos: {items, filter, status}}) => {
+    const visibleItems = showFilters(
+        getFilteredTodos(items, filter),
+        status
+    );
+    const isItemsIncludes = !!items.length;
+    const filteredNotFound = !visibleItems.length;
+    return {
+        items: visibleItems,
+        isItemsIncludes,
+        filteredNotFound,
+        filter,
+        status,
+    }
+}
 
 // const mapDispatchToProps = (dispatch) => {
 //     // console.log(dispatch, '[dispatch]')
@@ -216,6 +210,7 @@ const mapDispatchToProps = {
     removeToDo,
     addToDo,
     handleFilterChange,
+    handleStatusChange,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Todos);
