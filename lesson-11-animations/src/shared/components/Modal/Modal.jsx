@@ -2,7 +2,11 @@ import { createPortal } from "react-dom";
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import clsx from "classnames";
+import { CSSTransition } from "react-transition-group";
+
 import css from "./Modal.module.css";
+import fade from "./fade.module.css";
+import CrossIcon from "../../icons/CrossIcon";
 
 const modalRoot = document.getElementById("modal-root");
 
@@ -32,12 +36,9 @@ class Modal extends Component {
     window.removeEventListener("keydown", this.handleKeyDown);
   }
 
-  handleBackdrop = (event) => {
+  handleBackdrop = () => {
     // console.log("[EVENT_TARGET]", event.target);
     // console.log("[EVENT_CURRENT_TARGET]", event.currentTarget);
-    // if (event.target !== event.currentTarget) {
-    //   this.props.onClose && this.props.onClose();
-    // }
     this.props.onClose && this.props.onClose();
   };
 
@@ -51,30 +52,29 @@ class Modal extends Component {
   render() {
     const { open, children, onClose } = this.props;
     return createPortal(
-      <div className={css.container}>
-        <div
-          onClick={this.handleBackdrop}
-          role="none presentation"
-          tabIndex={-1}
-          className={clsx(css.overlay, {
-            [css.overlay__open]: open,
-          })}
-        />
-        <div className={css.dialog__container}>
+      <CSSTransition in={open} timeout={300} classNames={fade} unmountOnExit>
+        <div className={css.container}>
           <div
-            role="dialog"
-            className={clsx(css.modal, { [css.modal__open]: open })}
-          >
-            <button
-              onClick={() => onClose()}
-              type="button"
-              className="btn-close"
-              aria-label="Close"
-            />
-            {children}
+            onClick={this.handleBackdrop}
+            role="none presentation"
+            tabIndex={-1}
+            className={clsx(css.overlay)}
+          />
+          <div className={css.dialog__container}>
+            <div role="dialog" className={clsx(css.modal)}>
+              <button
+                onClick={() => onClose()}
+                type="button"
+                className={css.close_button}
+                aria-label="Close"
+              >
+                <CrossIcon />
+              </button>
+              {children}
+            </div>
           </div>
         </div>
-      </div>,
+      </CSSTransition>,
       modalRoot
     );
   }
