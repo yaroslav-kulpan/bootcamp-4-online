@@ -1,0 +1,34 @@
+{
+  "todos": [
+    {
+      "label": "jdhjdhjdhjd",
+      "completed": false,
+      "id": 1
+    },
+    {
+      "label": "React",
+      "completed": false,
+      "id": 2
+    },
+    {
+      "label": "Svelte",
+      "completed": false,
+      "id": 3
+    },
+    {
+      "label": "Preact",
+      "completed": false,
+      "id": 4
+    },
+    {
+      "label": "Ember",
+      "completed": false,
+      "id": 5
+    },
+    {
+      "label": "ldkjkjkjf",
+      "completed": false,
+      "id": 6
+    }
+  ]
+}
